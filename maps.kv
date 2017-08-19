@@ -1,0 +1,45 @@
+#:kivy 1.10.0
+#:import MapView kivy.garden.mapview
+#:import MapSource kivy.garden.mapview
+
+<MapBar>:
+    size_hint_y: None
+    height: '48dp'
+    padding: '4dp'
+    spacing: '4dp'
+    canvas:
+        Color:
+            rgba: .2, .2, .2, .6
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<SpinnerStyle@SpinnerOption>:
+    text_size: self.size
+    halign: 'center'
+    valign: 'middle'
+    background_color: [0.1, 0.1, 0.1, 0.2]
+
+<MapLayout>:
+    ourmap: ourmap
+    OurMapView:
+        id: ourmap
+    MapBar:
+        top: self.parent.top
+        Label:
+            text: "Latitude: {:2.4f}".format(root.ourmap.lat)
+        Label:
+            text: "Longitude: {:2.4f}".format(root.ourmap.lon)
+        Button:
+            text: 'Home'
+            background_color: [0.1, 0.1, 0.1, 0.1]
+            on_press: self.parent.center_map()
+        Spinner:
+            text: "Select Map Source"
+            background_color: [0.1, 0.1, 0.1, 0.1]
+            text_size: self.size
+            halign: 'center'
+            valign: 'middle'
+            option_cls: 'SpinnerStyle'
+            values: root.mapsource.providers.keys()
+            on_text: ourmap.map_source = self.text
