@@ -16,38 +16,43 @@ kivy.config.Config.set('graphics', 'resizable', 0)
 kivy.config.Config.set('graphics', 'width', 800)
 kivy.config.Config.set('graphics', 'height', 480)
 kivy.core.window.Window.size = (800, 480)
-
-config = configparser.ConfigParser()
-config.read('maps.conf')
-
 pp = pprint.PrettyPrinter(indent=4)
+config = configparser.ConfigParser()
 
-MAXLOGSIZE = config.getint('Logging', 'maxlogsize')
-ROTATIONCOUNT = config.getint('Logging', 'rotationcount')
-LOGGERNAME = config.get('Logging', 'loggername')
+try:
+    assert __name__ == '__main__'
+    config.read('maps.conf')
+except AssertionError:
+    raise
+else:
+    MAXLOGSIZE = config.getint('Logging', 'maxlogsize')
+    ROTATIONCOUNT = config.getint('Logging', 'rotationcount')
+    LOGGERNAME = config.get('Logging', 'loggername')
 
-# create logger
-logger = logging.getLogger(LOGGERNAME)
-# logger.setLevel(logging.INFO)
-logger.setLevel(logging.DEBUG)
-# create file handler which logs even debug messages
-logger_fh = logging.handlers.RotatingFileHandler(LOGGERNAME + '.log',
-                                                 maxBytes=MAXLOGSIZE,
-                                                 backupCount=ROTATIONCOUNT)
-logger_fh.setLevel(logging.DEBUG)
-# create console handler with a higher log level
-logger_ch = logging.StreamHandler()
-logger_ch.setLevel(logging.ERROR)
-# create formatter and add it to the handlers
-logger_formatter = logging.Formatter('%(asctime)s'
-                                     + ' %(levelname)s'
-                                     + ' %(name)s[%(process)d]'
-                                     + ' %(message)s')
-logger_fh.setFormatter(logger_formatter)
-logger_ch.setFormatter(logger_formatter)
-# add the handlers to the logger
-logger.addHandler(logger_fh)
-logger.addHandler(logger_ch)
+    # create logger
+    logger = logging.getLogger(LOGGERNAME)
+    # logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
+    # create file handler which logs even debug messages
+    logger_fh = logging.handlers.RotatingFileHandler(LOGGERNAME + '.log',
+                                                     maxBytes=MAXLOGSIZE,
+                                                     backupCount=ROTATIONCOUNT)
+    logger_fh.setLevel(logging.DEBUG)
+    # create console handler with a higher log level
+    logger_ch = logging.StreamHandler()
+    logger_ch.setLevel(logging.ERROR)
+    # create formatter and add it to the handlers
+    logger_formatter = logging.Formatter('%(asctime)s'
+                                         + ' %(levelname)s'
+                                         + ' %(name)s[%(process)d]'
+                                         + ' %(message)s')
+    logger_fh.setFormatter(logger_formatter)
+    logger_ch.setFormatter(logger_formatter)
+    # add the handlers to the logger
+    logger.addHandler(logger_fh)
+    logger.addHandler(logger_ch)
+finally:
+    pass
 
 
 class OurMapSource(kivy.garden.mapview.MapSource):
